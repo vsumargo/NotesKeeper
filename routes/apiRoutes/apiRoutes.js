@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// const db = require('../../db/db.json') || [];
 const {nanoid} = require('nanoid');
 const fs = require('fs');
 const path = require('path');
@@ -21,15 +20,12 @@ const fileExists = (file) => {
         });
     })
 }
+// run validation functions for database file db.json
 fileExists(dbPath)
-.then((resp) => {
-    db = resp;
-    console.log(db);
-})
+.then((resp) => db = resp)
 .catch(() => db = []);
 
-
-
+//define routes for API request
 router.get('/api/notes', (req,res) => {
     res.json(db);
 });
@@ -40,8 +36,7 @@ router.post('/api/notes', (req,res) => {
     // console.log(db);
     db.push(req.body);
     // console.log(db);
-    const filePath = path.join(__dirname,'..','..','db','db.json')
-    fs.writeFile(filePath, JSON.stringify(db), 'utf-8', (err) => {
+    fs.writeFile(dbPath, JSON.stringify(db), 'utf-8', (err) => {
         if (err){
            throw console.log(`${err}: CANNOT saved to database`)
         }else{
@@ -53,7 +48,15 @@ router.post('/api/notes', (req,res) => {
 
 router.delete('/api/notes/:id', (req,res) => {
     const deleteId = req.params.id;
-    
+    db = db.filter(data => data.id !== deleteId);
+    fs.writeFile(dbPath, JSON.stringify(db), 'utf-8', (err) => {
+        if (err){
+           throw console.log(`${err}: CANNOT saved to database`)
+        }else{
+            console.log(`Successfully delete ID:${deleteId} from database!`);
+            res.json({success:true});
+        }
+    });
 })
 
 module.exports = router
