@@ -5,7 +5,7 @@ const router = require('./routes/routes.js');
 
 const PORT = 8000;
 
-
+app.use(express.static(__dirname+'/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(router);
