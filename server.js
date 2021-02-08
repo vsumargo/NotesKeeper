@@ -3,7 +3,7 @@ const app = express();
 
 const router = require('./routes/routes.js');
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.static(__dirname+'/public'));
 app.use(express.urlencoded({ extended: true }));
